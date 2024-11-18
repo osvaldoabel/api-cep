@@ -23,7 +23,7 @@
     - street: string
     -GetAddress() Cep
 
-# ViaCep
+# Address
     - cep:              string
     - logradouro:       string
     - complemento:      string 
@@ -40,8 +40,8 @@
     - siafi: string
     -GetAddress() Cep
 
-
-<>Cep
+<!-- interface -->
+<> Cep
     GetAddress() Cep
 
 
