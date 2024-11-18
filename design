@@ -1,0 +1,49 @@
+<!-- struct -->
+# ViaCepProvider
+    - url
+    - name
+    - Research() Cep
+
+<!-- struct -->
+# BrasilApiProvider
+    - url
+    - name
+    - Research() Cep
+
+<!-- interface -->
+<> PostalCodeProvider
+    - Research() Cep
+ 
+     
+# BrasilApi
+    - cep: string
+    - state: string
+    - city: string
+    - neighborhood: string
+    - street: string
+    -GetAddress() Cep
+
+# ViaCep
+    - cep:              string
+    - logradouro:       string
+    - complemento:      string 
+    - stree: string       
+    - unidade: string    
+    - bairro: string     
+    - localidade: string
+    - uf: string       
+    - estado: string  
+    - regiao: string  
+    - ibge: string    
+    - gia: string  
+    - ddd: string
+    - siafi: string
+    -GetAddress() Cep
+
+
+<>Cep
+    GetAddress() Cep
+
+
+
+
