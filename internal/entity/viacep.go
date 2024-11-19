@@ -17,11 +17,11 @@ type viaCepProvider struct {
 	Url        string
 }
 
-func NewViaCepProvider(httpClient *http.Client) PostalCodeProvider {
+func NewViaCepProvider() PostalCodeProvider {
 	return &viaCepProvider{
-		HttpClient: httpClient,
+		HttpClient: http.DefaultClient,
 		Name:       "ViaCep",
-		Url:        "",
+		Url:        utils.ViaCepUrl,
 	}
 }
 
@@ -55,6 +55,7 @@ func (va *ViaCepAddress) GetAddressFields() (string, error) {
 func (p *viaCepProvider) GetAddress(ctx context.Context) (Address, error) {
 	ctx, cancel := context.WithTimeout(ctx, utils.TimeoutLimit)
 	defer cancel()
+	// fmt.Printf("\n ====>> requesting %v \n", p.Url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, p.Url, nil)
 	if err != nil {
 		log.Default().Printf("error while trying to create an http request. %v", err)
@@ -68,19 +69,20 @@ func (p *viaCepProvider) GetAddress(ctx context.Context) (Address, error) {
 			log.Default().Printf("error while trying to execute request. %v", err)
 			return
 		}
-		defer resp.Body.Close()
 
 		response <- resp
 	}()
 
 	select {
 	case <-ctx.Done():
-		return nil, errors.New("request has been finished or timed out")
+		return nil, errors.New("\nrequest has been finished or timed out")
 	case result := <-response:
+		defer result.Body.Close()
 
 		body, err := io.ReadAll(result.Body)
 		if err != nil {
-			return nil, errors.New("request has been finished or timed out")
+			log.Default().Printf("error while trying to read request body. %v", err)
+			return nil, err
 		}
 
 		var address ViaCepAddress

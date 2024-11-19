@@ -19,8 +19,9 @@ type brasilApiProvider struct {
 
 func NewBrasilApiProvider() PostalCodeProvider {
 	return &brasilApiProvider{
-		Name: "BrasilAPI",
-		Url:  "",
+		HttpClient: http.DefaultClient,
+		Name:       "BrasilAPI",
+		Url:        utils.BrasilAPIUrl,
 	}
 }
 
@@ -41,6 +42,8 @@ func (ba *brasilApiAddress) GetAddressFields() (string, error) {
 func (p *brasilApiProvider) GetAddress(ctx context.Context) (Address, error) {
 	ctx, cancel := context.WithTimeout(ctx, utils.TimeoutLimit)
 	defer cancel()
+
+	// fmt.Printf("\n ====>> requesting %v \n", p.Url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, p.Url, nil)
 	if err != nil {
 		log.Default().Printf("error while trying to create an http request. %v", err)
@@ -54,7 +57,6 @@ func (p *brasilApiProvider) GetAddress(ctx context.Context) (Address, error) {
 			log.Default().Printf("error while trying to execute request. %v", err)
 			return
 		}
-		defer resp.Body.Close()
 
 		response <- resp
 	}()
@@ -63,10 +65,12 @@ func (p *brasilApiProvider) GetAddress(ctx context.Context) (Address, error) {
 	case <-ctx.Done():
 		return nil, errors.New("request has been finished or timed out")
 	case result := <-response:
+		defer result.Body.Close()
 
 		body, err := io.ReadAll(result.Body)
 		if err != nil {
-			return nil, errors.New("request has been finished or timed out")
+			log.Default().Printf("error while trying to read request body. %v", err)
+			return nil, err
 		}
 
 		var address brasilApiAddress
