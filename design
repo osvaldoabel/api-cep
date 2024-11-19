@@ -2,27 +2,27 @@
 # ViaCepProvider
     - url
     - name
-    - Research() Cep
+    - GetAddress() (http.Response, error)
 
 <!-- struct -->
 # BrasilApiProvider
     - url
     - name
-    - Research() Cep
+    - GetAddress() http.Response, error
 
 <!-- interface -->
 <> PostalCodeProvider
-    - Research() Cep
- 
-     
-# BrasilApi
-    - cep: string
-    - state: string
-    - city: string
-    - neighborhood: string
-    - street: string
-    -GetAddress() Cep
+    - GetAddress() (http.Response, error)
 
+
+
+
+
+
+
+
+
+<!-- entities -->
 # Address
     - cep:              string
     - logradouro:       string
@@ -38,7 +38,31 @@
     - gia: string  
     - ddd: string
     - siafi: string
-    -GetAddress() Cep
+    - Service: string
+
+<!-- DTOs -->
+# GetAddressBrasilApiDTO
+    - cep: string
+    - state: string
+    - city: string
+    - neighborhood: string
+    - street: string
+
+# GetAddressViaCepDTO
+    - cep:              string
+    - logradouro:       string
+    - complemento:      string 
+    - stree: string       
+    - unidade: string    
+    - bairro: string     
+    - localidade: string
+    - uf: string       
+    - estado: string  
+    - regiao: string  
+    - ibge: string    
+    - gia: string  
+    - ddd: string
+    - siafi: string
 
 <!-- interface -->
 <> Cep
